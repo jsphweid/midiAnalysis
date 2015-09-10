@@ -3,9 +3,6 @@
 	<head>
 		<script src="stream.js"></script>
 		<script src="midifile.js"></script>
-		<script src="replayer.js"></script>
-		<script src="synth.js"></script>
-		<script src="audio.js"></script>
 		<script>
 			function loadRemote(path, callback) {
 				var fetch = new XMLHttpRequest();
@@ -30,9 +27,6 @@
 			function play(file) {
 				loadRemote(file, function(data) {
 					midiFile = MidiFile(data);
-					synth = Synth(44100);
-					replayer = Replayer(midiFile, synth);
-					audio = AudioPlayer(replayer);
 				})
 			}
 
@@ -46,20 +40,14 @@
 				document.addEventListener('drop', function(e){
 					cancelEvent(e);
 					for(var i=0;i<e.dataTransfer.files.length;++i){
-						var
-							file = e.dataTransfer.files[i]
-						;
-						if(file.type != 'audio/midi'){
+						var file = e.dataTransfer.files[i];
+
+						if (file.type != 'audio/midi') {
 							continue;
 						}
-						var
-							reader = new FileReader()
-						;
+						var reader = new FileReader();
 						reader.onload = function(e){
 							midiFile = MidiFile(e.target.result);
-							synth = Synth(44100);
-							replayer = Replayer(midiFile, synth);
-							audio = AudioPlayer(replayer);
 						};
 						reader.readAsBinaryString(file);
 					}
@@ -70,5 +58,9 @@
 	<body>
 		<a href="javascript:void(play('minute_waltz.mid'))">Chopin - Waltz Op.61 (Minute Waltz)</a> |
 		<a href="javascript:void(play('rachmaninov3.mid'))">Rachmaninov - Piano Concerto No.3 (First movement)</a>
+		<a href="javascript:void(play('Untitled1.mid'))">Untitled1</a> 
+		<a href="javascript:void(play('a_night_in_tunisia_2_jc.mid'))">a_night_in_tunisia_2_jc</a> 
+		<a href="javascript:void(play('2_of_a_kind_jp.mid'))">2_of_a_kind_jp</a> 
 	</body>
 </html>
+	

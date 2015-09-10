@@ -217,6 +217,8 @@ function MidiFile(data) {
 		'ticksPerBeat': ticksPerBeat
 	}
 	var tracks = [];
+
+	var bigChordList = [];
 	for (var i = 0; i < header.trackCount; i++) {
 		tracks[i] = [];
 		var trackChunk = readChunk(stream);
@@ -224,15 +226,42 @@ function MidiFile(data) {
 			throw "Unexpected chunk - expected MTrk, got "+ trackChunk.id;
 		}
 		var trackStream = Stream(trackChunk.data);
+		var setTempos = [];
+
+		var count = 0;
+		var chord = [];
+
 		while (!trackStream.eof()) {
 			var event = readEvent(trackStream);
 			tracks[i].push(event);
-			//console.log(event);
-		}
+			if (event.subtype == "noteOn") {
+				if (count > 0 && event.deltaTime == 0) {
+					// if another noteOn event 
+					chord.push(event.noteNumber);
+				}
+				if (count == 0) {
+					// if first note
+					chord.push(event.noteNumber);
+					count++;
+				}
+			} else {
+				if (chord.length > 4) {
+					bigChordList.push(chord)
+				}
+				count = 0;
+				chord = []; // reset
+			}
+			// console.log(event);
+		} // make absolute time, pay attn to note on/off and change of time
+
 	}
-	
+	console.log(bigChordList); // print out all chords, yay
+
+	// console.log(tracks);
 	return {
 		'header': header,
 		'tracks': tracks
 	}
 }
+
+
