@@ -245,7 +245,11 @@ function MidiFile(data) {
 					count++;
 				}
 			} else {
+<<<<<<< HEAD
 				if (chord.length > 4) {
+=======
+				if (chord.length > 1) {
+>>>>>>> 62403da4a4f581c4cfff40cc876964d4381a3da6
 					bigChordList.push(chord)
 				}
 				count = 0;
